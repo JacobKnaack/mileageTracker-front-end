@@ -1,0 +1,18 @@
+<main class="app-trip-meter">
+  <div id="trip-meter">
+    <h3 ng-show="mapCtrl.startTrack == null && mapCtrl.stopTracking == null">Hit the track button to start Tracking!</h3>
+    <p ng-if="mapCtrl.startTrack == true">
+      Starting Location:
+      <span id="startLocationLat"></span>
+      <span id="startLocationLon"></span>
+    </p>
+    <p ng-if="mapCtrl.startTrack == true || mapCtrl.stopTrack == true">
+      Current Location:
+      <span id="currentLocationLat"></span>
+      <span id="currentLocationLon"></span>
+    </p>
+    <p ng-if="mapCtrl.startTrack == true || mapCtrl.stopTrack == true">
+      Distance from starting location: <span id="totalDistance">0</span>
+    </p>
+  </div>
+</main>

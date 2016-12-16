@@ -1,0 +1,100 @@
+@import "_theme";
+
+.app-login{
+  font-family: 'Varela Round', sans-serif;
+  margin: 10vh auto;
+  width: 50vw;
+  height: 75vh;
+
+  h1{
+    color: $app-default;
+    font-size: 3em;
+    text-align: center;
+    font-family: 'Fugaz One', cursive;
+  }
+
+  h4 {
+    color: $app-darkBlue;
+    font-size: 1.5em;
+    margin: 0 auto;
+    text-align: center;
+    width: 30vw;
+  }
+
+  p {
+    color: $app-darkBlue;
+    margin: 5px auto 0 auto;
+  }
+
+  .selected{
+    background-color: grey;
+    p {
+      color: white;
+    }
+  }
+
+  .loginSelect {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    div {
+      cursor: default;
+      width: 75px;
+      text-align: center;
+      border: thin solid grey;
+      border-bottom: none;
+      border-radius: 5px 5px 0 0;
+    }
+  }
+
+  .emailPass, .naming {
+    margin: 10% auto;
+    width: 300px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid grey;
+     border-radius: 5px;
+
+    .input-block{
+      line-height: 100%;
+      height: 50px;
+      margin-bottom: 10px;
+      text-align: center;
+
+      input{
+        border: none;
+        outline: none;
+        border-bottom: thin solid $app-default;
+        border-radius: 0;
+      }
+
+      input{
+        margin-top: 20px;
+        font-family: 'Varela Round', sans-serif;
+        font-size: 1.1em;
+      }
+    }
+  }
+
+
+  .signup-form, .signin-form{
+    button {
+      font-family: 'Varela Round';
+      width: 100px;
+      height: 30px;
+      margin: 0 auto;
+      position: relative;
+      border: thin solid $app-default;
+      background-color: white;
+      border-radius: 5px;
+      &:hover{
+        background-color: $app-default;
+      }
+    }
+
+    text-align: center;
+  }
+}

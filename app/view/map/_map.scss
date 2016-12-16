@@ -1,0 +1,30 @@
+@import "_theme";
+
+#map {
+  height: 100vh;
+  width: 100vw;
+}
+
+.startStop {
+  position: fixed;
+  outline: none;
+  top: 85%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  margin-left: -40px;
+  font-family: 'Fugaz One', cursive;
+  font-size: 1.2em;
+  color: $app-default;
+  background-color: $app-compliment;
+  border: solid 5px grey;
+  border-radius: 40px 40px 40px 40px;
+
+  &:active {
+    filter: blur(5px);
+  }
+
+  &:hover {
+    box-shadow: 5px 5px 5px grey;
+  }
+}

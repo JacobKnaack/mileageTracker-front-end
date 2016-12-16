@@ -1,0 +1,50 @@
+<main ng-init="loginCtrl.getToken()" class="app-login">
+  <h1>Mileage Log</h1>
+
+  <h4>Track your Travels</h4>
+
+  <section class="loginSelect">
+    <div ng-repeat="btn in loginCtrl.buttons"
+         ng-class="{ 'selected': $index == loginCtrl.selectedIndex }"
+         ng-click="loginCtrl.toggleView($index)">
+      <p>{{btn}}</p>
+    </div>
+  </section>
+
+  <form ng-show="loginCtrl.selectedIndex == 0" class="signup-form" novalidate ng-submit="loginCtrl.signup()">
+    <section class="emailPass" style="margin-top: 0;">
+      <p>required</p>
+      <div class="input-block">
+        <input required ng-class="{appInvalid: signupForm.$submitted && signupForm.email.$invalid}" ng-model="loginCtrl.user.emailAddress" type="email" placeholder="Email">
+      </div>
+      <div class="input-block">
+        <input required ng-minlength="4" ng-class="{appInvalid: signupForm.$submitted && signupForm.password.$invalid}" ng-model="loginCtrl.user.password" type="password" placeholder="Password">
+      </div>
+    </section>
+
+    <section class="naming">
+      <p>optional</p>
+      <div class="input-block">
+        <input ng-model="loginCtrl.user.firstName" type="text" placeholder="First Name">
+      </div>
+      <div class="input-block">
+        <input  ng-model="loginCtrl.user.lastName" type="text" placeholder="Last Name">
+      </div>
+    </section>
+
+    <button ng-disabled="signupForm.$invalid" type="submit">Create Account</button>
+  </form>
+
+  <form ng-show="loginCtrl.selectedIndex == 1" class="signin-form" novalidate ng-submit="loginCtrl.signin()" action="">
+    <section class="emailPass" style="margin-top: 0">
+      <div class="input-block">
+        <input required ng-class="{appInvalid: signupForm.$submitted && signupForm.email.$invalid}" ng-model="loginCtrl.user.emailAddress" type="email" placeholder="Email">
+      </div>
+      <div class="input-block">
+        <input required ng-minlength="4" ng-class="{appInvalid: signupForm.$submitted && signupForm.password.$invalid}" ng-model="loginCtrl.user.password" type="password" placeholder="Password">
+      </div>
+    </section>
+
+    <button ng-disabled="signinForm.$invalid" type="submit">Log In</button>
+  </form>
+</main>

@@ -1,0 +1,16 @@
+@import "_theme";
+
+body, html {
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+h1, h2, h3 {
+  font-family: "Fugaz One";
+  color: $app-default;
+}
+
+p, li {
+  font-family: 'Varela Round';
+}

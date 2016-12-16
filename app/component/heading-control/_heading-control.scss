@@ -1,0 +1,43 @@
+@import "_theme";
+
+.app-heading-control {
+  position: absolute;
+  z-index: 100;
+  width: 100vw;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: #d3d3d3;
+  border-bottom: thin solid $app-darkBlue;
+
+  h1 {
+    width: 300px;
+    margin: 10px auto 0 auto;
+    text-align: center;
+  }
+
+  .userMenu {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0;
+    margin: 10px 0 0 0 ;
+
+    li {
+      cursor: pointer;
+      border: thin solid grey;
+      border-bottom: none;
+      border-radius: 15px 15px 0px 0px;
+      color: $app-default;
+      background-color: white;
+      padding: 10px;
+      margin: 0 20px;
+
+      &:active {
+        background-color: $app-compliment;
+      }
+    }
+  }
+}
