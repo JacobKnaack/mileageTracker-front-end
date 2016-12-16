@@ -19,9 +19,11 @@ function MapController($log, $location, authService){
   });
 
   // setting up map context variables
-  const vm = this;
+  const vm = this; // intitalizes context for MapController to be passed into google map loader
   vm.meter = true;
   vm.googleMarkers = [];
+  vm.markersForTripPath = [];
+
   vm.buttonText = 'Track Me!';
   vm.startTrack = null;
   vm.stopTrack = null;
@@ -57,7 +59,7 @@ function MapController($log, $location, authService){
       disableDefaultUI: true
     });
 
-    var geolocation = new google.maps.Marker({
+    var geolocation = new google.maps.Marker({ // map marker for current user location
       map: map,
       title: 'Current Position',
       icon: {
@@ -66,16 +68,26 @@ function MapController($log, $location, authService){
       }
     });
 
+    var tripPath = new google.maps.Polyline({ // line of path traveled by user
+      path: vm.markersForTripPath,
+      geodesic: true,
+      strokeColor: 'blue',
+      strokeOpacity: 0.8,
+      strokeWeight: 2
+    });
+
     /*eslint-disable*/
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
+      navigator.geolocation.watchPosition(function(position) {
     /*eslint-enable*/
         pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
 
-        geolocation.setPosition(pos);
+        vm.markersForTripPath.push(pos); // pushes current position to tripPath array
+        geolocation.setPosition(pos); // sets the geolcation marker wherever the current user position is
+        tripPath.setMap(map); // draw the path the user has traveled so far
         map.setCenter(pos);
       }, function(){
         handleLocationError(true, geolocation, map.getCenter());
@@ -123,6 +135,9 @@ function MapController($log, $location, authService){
       for (i = 0; i < len; i++){
         vm.googleMarkers[i].setMap(null);
       }
+      len = vm.markersForTripPath.length;
+      vm.markersForTripPath.splice(0, len);
+      tripPath.setMap(null);
     };
   });
 

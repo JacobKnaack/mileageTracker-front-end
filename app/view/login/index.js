@@ -34,7 +34,7 @@ function LoginController($log, $location, $window, authService){
     .then(token => {
       $log.info('token', token);
       $location.path('/map');
-      $window.location.reload();
+      //$window.location.reload();
     })
     .catch(err => {
       $log.error(err.message);
@@ -47,7 +47,7 @@ function LoginController($log, $location, $window, authService){
     .then(token => {
       $log.info('token', token);
       $location.path('/map');
-      $window.location.reload();
+      //$window.location.reload();
     })
     .catch(err => {
       $log.error(err.message);

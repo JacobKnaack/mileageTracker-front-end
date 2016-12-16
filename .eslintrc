@@ -14,7 +14,9 @@
   "globals": {
     "__DEBUG__": false,
     "__API_URL__": false,
-    "__API_KEY__": false
+    "__API_KEY__": false,
+    "document": false,
+    "navigator": false
   },
   "ecmaFeatures": {
     "modules": true,
