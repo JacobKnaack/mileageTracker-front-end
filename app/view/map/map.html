@@ -1,17 +1,22 @@
 <main class="app-map">
   <app-heading-control></app-heading-control>
-  <app-trip-meter ng-show="mapCtrl.meter"></app-trip-meter>
+  <app-trip-meter></app-trip-meter>
 
   <div id="map"></div>
 
   <button class="startStop"
           ng-if="mapCtrl.startTrack == null && mapCtrl.stopTrack == null"
           ng-click="mapCtrl.tripButton(); tripMeterCtrl.getStartingPosition()">
-          {{mapCtrl.buttonText}}
+          Track Me!
   </button>
   <button class="startStop"
-          ng-if="mapCtrl.startTrack !== null"
+          ng-if="mapCtrl.startTrack == true"
+          ng-click="mapCtrl.tripButton();  tripMeterCtrl.getDistance()">
+          End Trip
+  </button>
+  <button class="startStop"
+          ng-if="mapCtrl.stopTrack == true"
           ng-click="mapCtrl.tripButton()">
-          {{mapCtrl.buttonText}}
+          New Trip!
   </button>
 </main>
