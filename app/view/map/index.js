@@ -72,6 +72,7 @@ function MapController($log, $location, authService, locationService){
 
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(function(position){
+        $log.debug('watching users position');
         pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
