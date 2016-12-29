@@ -6,9 +6,9 @@ const angular = require('angular');
 const appMileage = angular.module('appMileageLog');
 const GoogleMapsLoader = require('google-maps');
 
-appMileage.controller('MapController', ['$log', '$location',  'authService', MapController]);
+appMileage.controller('MapController', ['$log', '$location', 'authService', 'locationService', MapController]);
 
-function MapController($log, $location, authService){
+function MapController($log, $location, authService, locationService){
   $log.log('mapCtrl hit');
   authService.getToken()
   .then(() => {
@@ -20,11 +20,9 @@ function MapController($log, $location, authService){
 
   // setting up map context variables
   const vm = this; // intitalizes context for MapController to be passed into google map loader
-  vm.meter = true;
   vm.googleMarkers = [];
   vm.markersForTripPath = [];
 
-  vm.buttonText = 'Track Me!';
   vm.startTrack = null;
   vm.stopTrack = null;
 
@@ -32,16 +30,13 @@ function MapController($log, $location, authService){
     if (vm.startTrack == true) {
       vm.startTrack = false;
       vm.stopTrack = true;
-      vm.buttonText = 'New Trip!';
       vm.stopTracking();
     } else if (vm.stopTrack == true) {
       vm.startTrack = null;
       vm.stopTrack = null;
-      vm.buttonText = 'Track Me!';
       vm.resetMarkers();
     } else {
       vm.startTrack = true;
-      vm.buttonText = 'End Trip';
       vm.startTracking();
     }
   };
@@ -49,10 +44,9 @@ function MapController($log, $location, authService){
   // Goole maps module for angular
   GoogleMapsLoader.KEY = __API_KEY__;
   GoogleMapsLoader.load(function(google) {
+    var len;
     var pos;
-    /* eslint-disable*/
     var mapDiv = document.getElementById('map');
-    /* eslint-enable*/
     var map =  new google.maps.Map(mapDiv, {
       center: pos,
       zoom: 15,
@@ -76,17 +70,19 @@ function MapController($log, $location, authService){
       strokeWeight: 2
     });
 
-    /*eslint-disable*/
     if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(function(position) {
-    /*eslint-enable*/
+      navigator.geolocation.watchPosition(function(position){
+        $log.debug('watching users position');
         pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
 
+        locationService.pushCoords(pos); // makes position coordinates avaible to other controllers
         vm.markersForTripPath.push(pos); // pushes current position to tripPath array
-        geolocation.setPosition(pos); // sets the geolcation marker wherever the current user position is
+        len =  vm.markersForTripPath.length;
+        vm.currentPos = vm.markersForTripPath[len - 1];
+        geolocation.setPosition(pos); // sets the geolocation marker wherever the current user position is
         tripPath.setMap(map); // draw the path the user has traveled so far
         map.setCenter(pos);
       }, function(){

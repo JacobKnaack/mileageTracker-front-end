@@ -15,33 +15,23 @@ appMileage.directive('appTripMeter', function(){
   };
 });
 
-appMileage.controller('TripMeterController', ['$log', TripMeterController]);
+appMileage.controller('TripMeterController', ['$log', 'locationService', TripMeterController]);
 
-function TripMeterController($log) {
-  const vm = this;
+function TripMeterController($log, locationService) {
+  const vm = this; // initializes contect for tripMeter controller
   vm.startPos = null;
+  vm.endingPos = null;
+  vm.distanceTraveled = 0;
 
-  this.getStartingPosition = function(){ // sets the starting position in the trip meter
-    /* eslint-disable*/
-    navigator.geolocation.getCurrentPosition(function(position) {
-      $log.debug('setting start position at: ', position);
-      vm.startPos = position;
-      document.getElementById('startLocationLat').innerHTML = vm.startPos.coords.latitude + ', ';
-      document.getElementById('startLocationLon').innerHTML = vm.startPos.coords.longitude;
-    }, function(error) {
-      alert('an error has occured: ' + error.code);
-    });
+  vm.getStartingPosition = function(){ // sets the starting position in the trip meter
+    vm.startPos = locationService.fetchCoords();
+    $log.debug('trip meter start set: ', vm.startPos);
+  };
 
-    navigator.geolocation.watchPosition(function(position) { // finds the current position of user and watches for changes
-      document.getElementById('currentLocationLat').innerHTML = position.coords.latitude + ', ';
-      document.getElementById('currentLocationLon').innerHTML = position.coords.longitude;
-      if (vm.startPos !== null) {
-        document.getElementById('totalDistance').innerHTML =
-          calculateDistance(vm.startPos.coords.latitude, vm.startPos.coords.longitude,
-                            position.coords.latitude, position.coords.longitude);
-      }
-      /* eslint-enable*/
-    });
+  vm.getDistance = function() {
+    $log.debug('tripMeter calulating distance');
+    vm.endingPos = locationService.fetchCoords();
+    vm.distanceTraveled = calculateDistance(vm.startPos.lat, vm.startPos.lng, vm.endingPos.lat, vm.endingPos.lng);
   };
 
   function calculateDistance(lat1, lon1, lat2, lon2) { //calculates the distance between the starting position and the current user position

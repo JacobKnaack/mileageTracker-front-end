@@ -9,14 +9,14 @@
   left: 0;
   right: 0;
   margin: auto;
-}
 
-#trip-meter {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  background-color: rgba(192, 192, 192, 0.7);
-  border: thin solid $app-darkBlue;
-  border-top: none;
-  border-radius: 0 0 15px 15px;
+  #trip-meter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: rgba(192, 192, 192, 0.7);
+    border: thin solid $app-darkBlue;
+    border-top: none;
+    border-radius: 0 0 15px 15px;
+  }
 }
