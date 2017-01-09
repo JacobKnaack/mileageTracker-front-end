@@ -21,8 +21,7 @@ function MapController($log, $location, authService, locationService){
   // setting up map context variables
   const vm = this; // intitalizes context for MapController to be passed into google map loader
   vm.googleMarkers = [];
-  vm.markersForTripPath = [];
-
+  vm.tripCoords = [];
   vm.startTrack = null;
   vm.stopTrack = null;
 
@@ -44,12 +43,11 @@ function MapController($log, $location, authService, locationService){
   // Goole maps module for angular
   GoogleMapsLoader.KEY = __API_KEY__;
   GoogleMapsLoader.load(function(google) {
-    var len;
-    var pos;
+    vm.pos;
     var mapDiv = document.getElementById('map');
     var map =  new google.maps.Map(mapDiv, {
-      center: pos,
-      zoom: 15,
+      center: vm.pos,
+      zoom: 13,
       disableDefaultUI: true
     });
 
@@ -58,33 +56,35 @@ function MapController($log, $location, authService, locationService){
       title: 'Current Position',
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        scale: 7
+        scale: 6
       }
     });
 
     var tripPath = new google.maps.Polyline({ // line of path traveled by user
-      path: vm.markersForTripPath,
-      geodesic: true,
       strokeColor: 'blue',
-      strokeOpacity: 0.8,
-      strokeWeight: 2
+      strokeOpacity: 1.0,
+      strokeWeight: 3
     });
+    tripPath.setMap(map);
 
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(function(position){
-        $log.debug('watching users position');
-        pos = {
+        $log.debug('getting users position', vm.tripCoords);
+        vm.pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
+        locationService.pushCoords(vm.pos); // makes position coordinates available to other controllers
 
-        locationService.pushCoords(pos); // makes position coordinates avaible to other controllers
-        vm.markersForTripPath.push(pos); // pushes current position to tripPath array
-        len =  vm.markersForTripPath.length;
-        vm.currentPos = vm.markersForTripPath[len - 1];
-        geolocation.setPosition(pos); // sets the geolocation marker wherever the current user position is
-        tripPath.setMap(map); // draw the path the user has traveled so far
-        map.setCenter(pos);
+        if (vm.startTrack == true) {
+          vm.tripCoords.push(vm.pos);
+          var coords = new google.maps.LatLng(vm.tripCoords[vm.tripCoords.length - 1]);
+          var path = tripPath.getPath();
+          path.push(coords);
+        }
+
+        geolocation.setPosition(vm.pos); // sets the geolocation marker wherever the current user position is
+        map.setCenter(vm.pos);
       }, function(){
         handleLocationError(true, geolocation, map.getCenter());
       });
@@ -93,7 +93,7 @@ function MapController($log, $location, authService, locationService){
     }
 
     vm.startTracking = function(){
-      var startLatLng = pos;
+      var startLatLng = vm.pos;
       var startPosition = new google.maps.Marker({
         position: startLatLng,
         map: map,
@@ -105,12 +105,13 @@ function MapController($log, $location, authService, locationService){
         }
       });
 
+      vm.tripCoords.push(startLatLng);
       vm.googleMarkers.push(startPosition);
       startPosition.setPosition(startLatLng);
     };
 
     vm.stopTracking = function(){
-      var endLatLng = pos;
+      var endLatLng = vm.pos;
       var endPosition = new google.maps.Marker({
         position: endLatLng,
         map: map,
@@ -122,6 +123,7 @@ function MapController($log, $location, authService, locationService){
         }
       });
 
+      vm.tripCoords.push(endLatLng);
       vm.googleMarkers.push(endPosition);
       endPosition.setPosition(endLatLng);
     };
@@ -131,8 +133,8 @@ function MapController($log, $location, authService, locationService){
       for (i = 0; i < len; i++){
         vm.googleMarkers[i].setMap(null);
       }
-      len = vm.markersForTripPath.length;
-      vm.markersForTripPath.splice(0, len);
+      len = vm.tripCoords.length;
+      vm.tripCoords.splice(0, len);
       tripPath.setMap(null);
     };
   });
