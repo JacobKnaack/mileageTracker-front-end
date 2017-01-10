@@ -21,7 +21,7 @@ function TripMeterController($log, locationService) {
   const vm = this; // initializes contect for tripMeter controller
   vm.startPos = null;
   vm.endingPos = null;
-  vm.distanceTraveled = 0;
+  vm.distanceTraveled = null;
 
   vm.getStartingPosition = function(){ // sets the starting position in the trip meter
     vm.startPos = locationService.fetchCoords();
@@ -29,9 +29,10 @@ function TripMeterController($log, locationService) {
   };
 
   vm.getDistance = function() {
-    $log.debug('tripMeter calulating distance');
     vm.endingPos = locationService.fetchCoords();
     vm.distanceTraveled = calculateDistance(vm.startPos.lat, vm.startPos.lng, vm.endingPos.lat, vm.endingPos.lng);
+    locationService.pushDistance(vm.distanceTraveled);
+    $log.debug('tripMeter distance calculated', vm.distanceTraveled);
   };
 
   function calculateDistance(lat1, lon1, lat2, lon2) { //calculates the distance between the starting position and the current user position

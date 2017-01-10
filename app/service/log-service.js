@@ -25,7 +25,7 @@ function logService($log, $q, $http, $window) {
       return $q.resolve(res.data);
     })
     .catch(err => {
-      $log.info('log post failure', err.message);
+      $log.info('log post failure', err);
       return $q.reject(err);
     });
   };
