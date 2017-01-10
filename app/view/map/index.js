@@ -6,9 +6,9 @@ const angular = require('angular');
 const appMileage = angular.module('appMileageLog');
 const GoogleMapsLoader = require('google-maps');
 
-appMileage.controller('MapController', ['$log', '$location', 'authService', 'locationService', MapController]);
+appMileage.controller('MapController', ['$log', '$location', 'authService', 'locationService', 'logService', MapController]);
 
-function MapController($log, $location, authService, locationService){
+function MapController($log, $location, authService, locationService, logService){
   $log.log('mapCtrl hit');
   authService.getToken()
   .then(() => {
@@ -22,6 +22,7 @@ function MapController($log, $location, authService, locationService){
   const vm = this; // intitalizes context for MapController to be passed into google map loader
   vm.googleMarkers = [];
   vm.tripCoords = [];
+  vm.distance = null;
   vm.startTrack = null;
   vm.stopTrack = null;
 
@@ -33,7 +34,7 @@ function MapController($log, $location, authService, locationService){
     } else if (vm.stopTrack == true) {
       vm.startTrack = null;
       vm.stopTrack = null;
-      vm.resetMarkers();
+      vm.finishTrip();
     } else {
       vm.startTrack = true;
       vm.startTracking();
@@ -128,14 +129,28 @@ function MapController($log, $location, authService, locationService){
       endPosition.setPosition(endLatLng);
     };
 
-    vm.resetMarkers = function(){
-      var len = vm.googleMarkers.length, i;
-      for (i = 0; i < len; i++){
-        vm.googleMarkers[i].setMap(null);
-      }
-      len = vm.tripCoords.length;
-      vm.tripCoords.splice(0, len);
-      tripPath.setMap(null);
+    vm.finishTrip = function(){
+      vm.distance = locationService.fetchDistance();
+      var log = {
+        date: new Date(),
+        routeData: vm.tripCoords,
+        distance: vm.distance
+      };
+
+      logService.createLog(log)
+      .then(() => {
+        var len = vm.googleMarkers.length, i;
+        for (i = 0; i < len; i++){
+          vm.googleMarkers[i].setMap(null);
+        }
+
+        len = vm.tripCoords.length;
+        vm.tripCoords.splice(0, len);
+        tripPath.setMap(null);
+      })
+      .catch((err) => {
+        $log.error(err);
+      });
     };
   });
 

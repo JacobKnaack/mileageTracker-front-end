@@ -5,6 +5,7 @@ const appMileage = angular.module('appMileageLog');
 
 appMileage.service('locationService', function($log){
   var usersCoords = {};
+  var userDistance = null;
 
   var pushCoords = function(coords){
     $log.debug('updating coordinates: ', coords);
@@ -17,8 +18,18 @@ appMileage.service('locationService', function($log){
     return usersCoords;
   };
 
+  var pushDistance = function(distance){
+    userDistance = distance;
+  };
+
+  var fetchDistance = function(){
+    return userDistance;
+  };
+
   return {
     pushCoords: pushCoords,
-    fetchCoords: fetchCoords
+    fetchCoords: fetchCoords,
+    pushDistance: pushDistance,
+    fetchDistance: fetchDistance
   };
 });
