@@ -1,0 +1,15 @@
+@import "_theme";
+
+#logContainer {
+  margin-top: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .displayLog {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;;
+    margin: 20px 20px 20px 20px;
+  }
+}

@@ -41,4 +41,5 @@ require('./service/log-service');
 
 //angular controllers
 require('./view/login');
+require('./view/log');
 require('./view/map');
