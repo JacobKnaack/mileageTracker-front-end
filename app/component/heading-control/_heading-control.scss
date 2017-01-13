@@ -1,16 +1,18 @@
 @import "_theme";
 
 .app-heading-control {
-  position: absolute;
+  position: fixed;
   z-index: 100;
   width: 100vw;
-  height: 110px;
+  height: 80px;
   top: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   background-color: #d3d3d3;
-  border-bottom: thin solid $app-darkBlue;
+  box-shadow: 10px 10px 5px #888888;
+
 
   h1 {
     width: 300px;
@@ -24,7 +26,7 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 0;
-    margin: 23px 0 0 0;
+    margin: 0;
 
     #pageControl {
       display: flex;
@@ -48,7 +50,7 @@
       margin: 0 20px;
 
       &:active {
-        background-color: $app-compliment;
+        color: $app-blue;
       }
     }
 

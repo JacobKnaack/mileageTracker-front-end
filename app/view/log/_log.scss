@@ -1,15 +1,43 @@
 @import "_theme";
 
+#logHeading {
+  width: 200px;
+  margin-top: 130px;
+  margin: 120px auto auto auto;
+  color: black;
+  text-align: center;
+  border-bottom: solid thin $app-default;
+}
+
 #logContainer {
-  margin-top: 120px;
+  margin-top: 20px;
   display: flex;
+  width: 100vw;
   flex-direction: column;
   justify-content: center;
+  background-color: $app-blue;
 
   .displayLog {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;;
-    margin: 20px 20px 20px 20px;
+    justify-content: center;
+    margin: 20px 10px 20px 10px;
+  }
+
+  .logInfo {
+    text-align: center;
+    width: 20vw;
+  }
+
+  #logDate {
+    background-color: $app-default;
+  }
+
+  #logDistance {
+    background-color: grey;
+  }
+
+  #logRoute {
+    background-color: $app-compliment;
   }
 }

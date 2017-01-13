@@ -6,9 +6,9 @@ const angular = require('angular');
 const appMileage = angular.module('appMileageLog');
 const GoogleMapsLoader = require('google-maps');
 
-appMileage.controller('MapController', ['$log', '$location', 'authService', 'locationService', 'logService', MapController]);
+appMileage.controller('MapController', ['$scope', '$log', '$location', 'authService', 'locationService', 'logService', MapController]);
 
-function MapController($log, $location, authService, locationService, logService){
+function MapController($scope, $log, $location, authService, locationService, logService){
   $log.log('mapCtrl hit');
   authService.getToken()
   .then(() => {
@@ -75,6 +75,7 @@ function MapController($log, $location, authService, locationService, logService
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
+        $scope.$apply();
         locationService.pushCoords(vm.pos); // makes position coordinates available to other controllers
 
         if (vm.startTrack == true) {

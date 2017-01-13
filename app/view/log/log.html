@@ -1,16 +1,17 @@
 <main class="app-log">
   <app-heading-control></app-heading-control>
+  <h2 id="logHeading">Your Trips</h2>
   <div id="logContainer">
     <div class="displayLog" ng-repeat="logs in logCtrl.logs">
-      <section class="logInfo">
+      <section id="logDate" class="logInfo">
         <h4>Trip Date:</h4>
         <p>{{logs.date | date:'MM/dd/yyyy'}}</p>
       </section>
-      <section class="logInfo">
+      <section id="logDistance" class="logInfo">
         <h4>Distance Traveled:</h4>
         <p>{{logs.distance}} km</p>
       </section>
-      <section class="logInfo">
+      <section id="logRoute" class="logInfo">
         <h4>Your Route:</h4>
         <p>{{logs.routeData}}</p>
       </section>

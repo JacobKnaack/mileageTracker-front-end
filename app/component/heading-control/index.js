@@ -16,9 +16,13 @@ appMileage.directive('appHeadingControl', function(){
   };
 });
 
-appMileage.controller('HeadingController', ['$log', '$location', 'authService', HeadingController]);
+appMileage.controller('HeadingController', ['$log', '$location', '$window', 'authService', HeadingController]);
 
-function HeadingController($log, $location, authService){
+function HeadingController($log, $location, $window, authService){
+
+  this.mapReload = function(){
+    $window.location.reload();
+  };
 
   this.logout = function(){
     $log.debug('HeadingController logout function');
