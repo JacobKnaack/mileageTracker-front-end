@@ -22,6 +22,8 @@ function MapController($scope, $log, $location, authService, locationService, lo
   const vm = this; // intitalizes context for MapController to be passed into google map loader
   vm.googleMarkers = [];
   vm.tripCoords = [];
+  vm.startAddress = null;
+  vm.endAddress = null;
   vm.distance = null;
   vm.startTrack = null;
   vm.stopTrack = null;
@@ -45,6 +47,7 @@ function MapController($scope, $log, $location, authService, locationService, lo
   GoogleMapsLoader.KEY = __API_KEY__;
   GoogleMapsLoader.load(function(google) {
     vm.pos;
+    vm.google = google;
     var mapDiv = document.getElementById('map');
     var map =  new google.maps.Map(mapDiv, {
       center: vm.pos,
@@ -68,7 +71,7 @@ function MapController($scope, $log, $location, authService, locationService, lo
     });
     tripPath.setMap(map);
 
-    if (navigator.geolocation) {
+    if (navigator.geolocation) { // geolocation tracking function that runs everytime user position changes
       navigator.geolocation.watchPosition(function(position){
         $log.debug('getting users position', vm.tripCoords);
         vm.pos = {
@@ -93,6 +96,23 @@ function MapController($scope, $log, $location, authService, locationService, lo
     } else {
       handleLocationError(false, geolocation, map.getCenter());
     }
+
+    vm.geocodeLatLng = function(lat, lng, callback) {
+      var latLng = new vm.google.maps.LatLng(lat, lng);
+      var geocoder = new vm.google.maps.Geocoder;
+
+      geocoder.geocode({'location': latLng}, function(results, status) {
+        if (status == 'OK') {
+          if (results[0]) {
+            callback(results[0].address_components[0].long_name + ' ' + results[0].address_components[1].long_name);
+          } else {
+            $log.error('no results found');
+          }
+        } else {
+          $log.error('geocoder failed:', status);
+        }
+      });
+    };
 
     vm.startTracking = function(){
       var startLatLng = vm.pos;
@@ -131,26 +151,35 @@ function MapController($scope, $log, $location, authService, locationService, lo
     };
 
     vm.finishTrip = function(){
+      var tripLen = vm.tripCoords.length;
       vm.distance = locationService.fetchDistance();
-      var log = {
-        date: new Date(),
-        routeData: vm.tripCoords,
-        distance: vm.distance
-      };
+      vm.geocodeLatLng(vm.tripCoords[0].lat, vm.tripCoords[0].lng, function(address) {
+        vm.startAddress = address;
+        vm.geocodeLatLng(vm.tripCoords[tripLen - 1].lat, vm.tripCoords[tripLen - 1].lng, function(address) {
+          vm.endAddress = address;
+          var log = {
+            date: new Date(),
+            routeData: vm.tripCoords,
+            startAddress: vm.startAddress,
+            endAddress: vm.endAddress,
+            distance: vm.distance
+          };
+          $log.debug('log object', log);
 
-      logService.createLog(log)
-      .then(() => {
-        var len = vm.googleMarkers.length, i;
-        for (i = 0; i < len; i++){
-          vm.googleMarkers[i].setMap(null);
-        }
+          logService.createLog(log)
+          .then(() => {
+            var markerLen = vm.googleMarkers.length, i;
+            for (i = 0; i < markerLen; i++){
+              vm.googleMarkers[i].setMap(null);
+            }
 
-        len = vm.tripCoords.length;
-        vm.tripCoords.splice(0, len);
-        tripPath.setMap(null);
-      })
-      .catch((err) => {
-        $log.error(err);
+            vm.tripCoords.splice(0, tripLen);
+            tripPath.setMap(null);
+          })
+          .catch((err) => {
+            $log.error(err);
+          });
+        });
       });
     };
   });

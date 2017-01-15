@@ -20,6 +20,8 @@ describe('testing log service', function(){
         'lng': 42
       }
     ],
+    startAddress: 'NorthWest 57th St., Seattle',
+    endAddress: '3rd Ave, Seattle',
     distance: 1000
   };
 
@@ -35,6 +37,8 @@ describe('testing log service', function(){
         'lng': 50
       }
     ],
+    startAddress: '3rd Ave, Seattle',
+    endAddress: 'NorthWest 57th St., Seattle',
     distance: 900
   };
 
@@ -80,8 +84,8 @@ describe('testing log service', function(){
 
     this.logService.fetchUserLogs()
     .then(logs => {
-      console.log(logs);
       expect(logs.length).toEqual(2);
+      expect(logs[0].startAddress).toEqual('NorthWest 57th St., Seattle');
     })
     .catch(err => {
       expect(err).toEqual(undefined);
