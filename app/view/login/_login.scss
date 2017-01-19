@@ -97,4 +97,21 @@
 
     text-align: center;
   }
+
+  #signinError {
+    position: fixed;
+    width: 350px;
+    top: 10px;
+    left: 50vw;
+    text-align: center;
+    margin-left: -175px;
+    padding: 10px;
+    border: solid thin red;
+    border-radius: 5px 5px 5px 5px;
+
+    h3 {
+      color: red;
+      font-family: "Varela Round";
+    }
+  }
 }

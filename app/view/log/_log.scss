@@ -7,6 +7,12 @@
   flex-direction: column;
   justify-content: center;
 
+  #noLogs {
+    margin: 0 auto;
+    text-align: center;
+    font-family: 'Raleway';
+  }
+
   .displayLog {
     display: flex;
     min-height: 250px;

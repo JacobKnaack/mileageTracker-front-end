@@ -4,13 +4,15 @@ require('./_login.scss');
 const angular = require('angular');
 const appMileage = angular.module('appMileageLog');
 
-appMileage.controller('LoginController', ['$log', '$location', '$window', 'authService', LoginController]);
+appMileage.controller('LoginController', ['$scope', '$log', '$location', '$window', 'authService', LoginController]);
 
-function LoginController($log, $location, $window, authService){
+function LoginController($scope, $log, $location, $window, authService){
   $log.debug('signup controller has run');
 
+  const vm = this;
   this.buttons = ['Sign Up', 'Sign In'];
   this.selectedIndex = 0;
+  this.error = false;
 
   this.toggleView = function($index){
     this.selectedIndex = $index;
@@ -51,6 +53,12 @@ function LoginController($log, $location, $window, authService){
     })
     .catch(err => {
       $log.error(err.message);
+      vm.error = true;
+      setTimeout(function() {
+        $scope.$apply(function() {
+          vm.error = false;
+        });
+      }, 2500);
     });
   };
 }

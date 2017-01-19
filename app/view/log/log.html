@@ -1,6 +1,12 @@
 <main class="app-log">
   <app-heading-control></app-heading-control>
   <div id="logContainer">
+
+    <div id="noLogs" ng-hide="logCtrl.logs[0]">
+      <h4>You currently have no trips saved to your log book.</h4>
+      </p>When you save a trip on the tracking page they will show up here.</p>
+    </div>
+
     <div class="displayLog" ng-repeat="logs in logCtrl.logs">
       <section id="logDate" class="logInfo">
         <h4>{{logs.date | date:'fullDate'}}</p>
