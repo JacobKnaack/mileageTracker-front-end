@@ -16,7 +16,8 @@
     "__API_URL__": false,
     "__API_KEY__": false,
     "document": false,
-    "navigator": false
+    "navigator": false,
+    "alert": false
   },
   "ecmaFeatures": {
     "modules": true,

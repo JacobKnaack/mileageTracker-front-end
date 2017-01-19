@@ -6,9 +6,9 @@ const angular = require('angular');
 const appMileage = angular.module('appMileageLog');
 const GoogleMapsLoader = require('google-maps');
 
-appMileage.controller('MapController', ['$log', '$location',  'authService', MapController]);
+appMileage.controller('MapController', ['$scope', '$log', '$location', 'authService', 'locationService', 'logService', MapController]);
 
-function MapController($log, $location, authService){
+function MapController($scope, $log, $location, authService, locationService, logService){
   $log.log('mapCtrl hit');
   authService.getToken()
   .then(() => {
@@ -20,11 +20,11 @@ function MapController($log, $location, authService){
 
   // setting up map context variables
   const vm = this; // intitalizes context for MapController to be passed into google map loader
-  vm.meter = true;
   vm.googleMarkers = [];
-  vm.markersForTripPath = [];
-
-  vm.buttonText = 'Track Me!';
+  vm.tripCoords = [];
+  vm.startAddress = null;
+  vm.endAddress = null;
+  vm.distance = null;
   vm.startTrack = null;
   vm.stopTrack = null;
 
@@ -32,16 +32,13 @@ function MapController($log, $location, authService){
     if (vm.startTrack == true) {
       vm.startTrack = false;
       vm.stopTrack = true;
-      vm.buttonText = 'New Trip!';
       vm.stopTracking();
     } else if (vm.stopTrack == true) {
       vm.startTrack = null;
       vm.stopTrack = null;
-      vm.buttonText = 'Track Me!';
-      vm.resetMarkers();
+      vm.finishTrip();
     } else {
       vm.startTrack = true;
-      vm.buttonText = 'End Trip';
       vm.startTracking();
     }
   };
@@ -49,13 +46,12 @@ function MapController($log, $location, authService){
   // Goole maps module for angular
   GoogleMapsLoader.KEY = __API_KEY__;
   GoogleMapsLoader.load(function(google) {
-    var pos;
-    /* eslint-disable*/
+    vm.pos;
+    vm.google = google;
     var mapDiv = document.getElementById('map');
-    /* eslint-enable*/
     var map =  new google.maps.Map(mapDiv, {
-      center: pos,
-      zoom: 15,
+      center: vm.pos,
+      zoom: 13,
       disableDefaultUI: true
     });
 
@@ -64,31 +60,36 @@ function MapController($log, $location, authService){
       title: 'Current Position',
       icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        scale: 7
+        scale: 6
       }
     });
 
     var tripPath = new google.maps.Polyline({ // line of path traveled by user
-      path: vm.markersForTripPath,
-      geodesic: true,
       strokeColor: 'blue',
-      strokeOpacity: 0.8,
-      strokeWeight: 2
+      strokeOpacity: 1.0,
+      strokeWeight: 3
     });
+    tripPath.setMap(map);
 
-    /*eslint-disable*/
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(function(position) {
-    /*eslint-enable*/
-        pos = {
+    if (navigator.geolocation) { // geolocation tracking function that runs everytime user position changes
+      navigator.geolocation.watchPosition(function(position){
+        $log.debug('getting users position', vm.tripCoords);
+        vm.pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
+        $scope.$apply();
+        locationService.pushCoords(vm.pos); // makes position coordinates available to other controllers
 
-        vm.markersForTripPath.push(pos); // pushes current position to tripPath array
-        geolocation.setPosition(pos); // sets the geolcation marker wherever the current user position is
-        tripPath.setMap(map); // draw the path the user has traveled so far
-        map.setCenter(pos);
+        if (vm.startTrack == true) {
+          vm.tripCoords.push(vm.pos);
+          var coords = new google.maps.LatLng(vm.tripCoords[vm.tripCoords.length - 1]);
+          var path = tripPath.getPath();
+          path.push(coords);
+        }
+
+        geolocation.setPosition(vm.pos); // sets the geolocation marker wherever the current user position is
+        map.setCenter(vm.pos);
       }, function(){
         handleLocationError(true, geolocation, map.getCenter());
       });
@@ -96,8 +97,25 @@ function MapController($log, $location, authService){
       handleLocationError(false, geolocation, map.getCenter());
     }
 
+    vm.geocodeLatLng = function(lat, lng, callback) {
+      var latLng = new vm.google.maps.LatLng(lat, lng);
+      var geocoder = new vm.google.maps.Geocoder;
+
+      geocoder.geocode({'location': latLng}, function(results, status) {
+        if (status == 'OK') {
+          if (results[0]) {
+            callback(results[0].address_components[0].long_name + ' ' + results[0].address_components[1].long_name);
+          } else {
+            $log.error('no results found');
+          }
+        } else {
+          $log.error('geocoder failed:', status);
+        }
+      });
+    };
+
     vm.startTracking = function(){
-      var startLatLng = pos;
+      var startLatLng = vm.pos;
       var startPosition = new google.maps.Marker({
         position: startLatLng,
         map: map,
@@ -109,12 +127,13 @@ function MapController($log, $location, authService){
         }
       });
 
+      vm.tripCoords.push(startLatLng);
       vm.googleMarkers.push(startPosition);
       startPosition.setPosition(startLatLng);
     };
 
     vm.stopTracking = function(){
-      var endLatLng = pos;
+      var endLatLng = vm.pos;
       var endPosition = new google.maps.Marker({
         position: endLatLng,
         map: map,
@@ -126,18 +145,42 @@ function MapController($log, $location, authService){
         }
       });
 
+      vm.tripCoords.push(endLatLng);
       vm.googleMarkers.push(endPosition);
       endPosition.setPosition(endLatLng);
     };
 
-    vm.resetMarkers = function(){
-      var len = vm.googleMarkers.length, i;
-      for (i = 0; i < len; i++){
-        vm.googleMarkers[i].setMap(null);
-      }
-      len = vm.markersForTripPath.length;
-      vm.markersForTripPath.splice(0, len);
-      tripPath.setMap(null);
+    vm.finishTrip = function(){ // focus on moving the geolocation and logService function to endTrip, make this simply a resetting markers and variables function
+      var tripLen = vm.tripCoords.length;
+      vm.distance = locationService.fetchDistance();
+      vm.geocodeLatLng(vm.tripCoords[0].lat, vm.tripCoords[0].lng, function(address) {
+        vm.startAddress = address;
+        vm.geocodeLatLng(vm.tripCoords[tripLen - 1].lat, vm.tripCoords[tripLen - 1].lng, function(address) {
+          vm.endAddress = address;
+          var log = {
+            date: new Date(),
+            routeData: vm.tripCoords,
+            startAddress: vm.startAddress,
+            endAddress: vm.endAddress,
+            distance: vm.distance
+          };
+          $log.debug('log object', log);
+
+          logService.createLog(log)
+          .then(() => {
+            var markerLen = vm.googleMarkers.length, i;
+            for (i = 0; i < markerLen; i++){
+              vm.googleMarkers[i].setMap(null);
+            }
+
+            vm.tripCoords.splice(0, tripLen);
+            tripPath.setMap(null);
+          })
+          .catch((err) => {
+            $log.error(err);
+          });
+        });
+      });
     };
   });
 

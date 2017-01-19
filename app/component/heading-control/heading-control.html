@@ -1,11 +1,17 @@
-<main class="app-heading-control">
+<section class="app-heading-control">
   <h1>Mileage Log</h1>
 
   <nav>
     <ul class="userMenu">
-      <li>My Logs</li>
-      <li id="trip-meter-ctrl" ng-click="mapCtrl.meter = !mapCtrl.meter">My Trip</li>
+      <div id="pageControl">
+        <li>
+          <a href="#/log">My Logs</a>
+        </li>
+        <li>
+          <a href="#/map" ng-click="headingCtrl.mapReload()">Tracking</a>
+        </li>
+      </div>
       <li ng-click="headingCtrl.logout()">Logout</li>
     </ul>
   </nav>
-</main>
+</section>

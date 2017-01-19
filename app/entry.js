@@ -36,7 +36,10 @@ require('./component/trip-meter');
 
 // angular services
 require('./service/auth-service');
+require('./service/location-service');
+require('./service/log-service');
 
 //angular controllers
 require('./view/login');
+require('./view/log');
 require('./view/map');

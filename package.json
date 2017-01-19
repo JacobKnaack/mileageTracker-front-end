@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "mileage tracking web app",
   "main": "entry.js",
+  "engines": {
+    "node": "4.4.3",
+    "npm": "3.10.3"
+  },
   "scripts": {
     "test": "./node_modules/karma/bin/karma start --browsers PhantomJS --single-run",
     "start": "node ./server.js",

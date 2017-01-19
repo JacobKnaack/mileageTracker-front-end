@@ -1,17 +1,33 @@
 <main class="app-trip-meter">
   <div id="trip-meter">
-    <p ng-if="mapCtrl.startTrack == true">
-      Starting Location:
-      <span id="startLocationLat"></span>
-      <span id="startLocationLon"></span>
-    </p>
-    <p ng-if="mapCtrl.startTrack == true || mapCtrl.stopTrack == true">
-      Current Location:
-      <span id="currentLocationLat"></span>
-      <span id="currentLocationLon"></span>
-    </p>
-    <p ng-if="mapCtrl.startTrack == true || mapCtrl.stopTrack == true">
-      Distance from starting location: <span id="totalDistance">0</span>
-    </p>
+    <p ng-if="mapCtrl.startTrack == null">click the Track Me! button to start tracking!</p>
+    <div class="meterDisplay" ng-if="mapCtrl.startTrack == true">
+      <p class="meterHeading">Starting Location</p>
+      <p class="field">
+        <span>lat</span>
+        <span id="startLocationLat">{{tripMeterCtrl.startPos.lat | number:7}}</span>
+      </p>
+      <p class="field">
+        <span>lng</span>
+        <span id="startLocationLon">{{tripMeterCtrl.startPos.lng | number:7}}</span>
+      </p>
+    </div>
+    <div class="meterDisplay" ng-if="mapCtrl.startTrack == true || mapCtrl.stopTrack == true">
+      <p class="meterHeading">Current Location</p>
+      <p class="field">
+        <span>lat</span>
+        <span id="currentLocationLat">{{mapCtrl.pos.lat | number:7}}</span>
+      </p>
+      <p class="field">
+        <span>lng</span>
+        <span id="currentLocationLon">{{mapCtrl.pos.lng | number:7}}</span>
+      </p>
+    </div>
+    <div class="meterDisplay" ng-if="mapCtrl.stopTrack == true">
+      <p class="meterHeading">Distance traveled: </p>
+      <p>
+        <span id="distanceTraveled">{{tripMeterCtrl.distanceTraveled}}</span>
+      </p>
+    </div>
   </div>
 </main>
