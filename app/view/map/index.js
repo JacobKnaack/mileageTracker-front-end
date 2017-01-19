@@ -150,7 +150,7 @@ function MapController($scope, $log, $location, authService, locationService, lo
       endPosition.setPosition(endLatLng);
     };
 
-    vm.finishTrip = function(){
+    vm.finishTrip = function(){ // focus on moving the geolocation and logService function to endTrip, make this simply a resetting markers and variables function
       var tripLen = vm.tripCoords.length;
       vm.distance = locationService.fetchDistance();
       vm.geocodeLatLng(vm.tripCoords[0].lat, vm.tripCoords[0].lng, function(address) {
