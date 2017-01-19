@@ -4,8 +4,10 @@
   "description": "mileage tracking web app",
   "main": "entry.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot"
+    "test": "./node_modules/karma/bin/karma start --browsers PhantomJS --single-run",
+    "start": "node ./server.js",
+    "watch": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot",
+    "heroku-postbuild": "./node_modules/webpack/bin/webpack.js",
   },
   "author": "JacobKnaack",
   "license": "ISC",
