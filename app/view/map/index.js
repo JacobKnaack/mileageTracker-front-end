@@ -52,7 +52,11 @@ function MapController($scope, $log, $location, authService, locationService, lo
     var map =  new google.maps.Map(mapDiv, {
       center: vm.pos,
       zoom: 13,
-      disableDefaultUI: true
+      disableDefaultUI: true,
+      zoomControl: true,
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_CENTER
+      }
     });
 
     var geolocation = new google.maps.Marker({ // map marker for current user location
