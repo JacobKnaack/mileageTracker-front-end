@@ -39,7 +39,7 @@
     <button ng-disabled="signupForm.$invalid" type="submit">Create Account</button>
   </form>
 
-  <form ng-show="loginCtrl.selectedIndex == 1" class="signin-form" novalidate ng-submit="loginCtrl.signin()" action="">
+  <form ng-show="loginCtrl.selectedIndex == 1" class="signin-form" novalidate ng-submit="loginCtrl.signin()">
     <section class="emailPass" style="margin-top: 0">
       <div class="input-block">
         <input required ng-class="{appInvalid: signupForm.$submitted && signupForm.email.$invalid}" ng-model="loginCtrl.user.emailAddress" type="email" placeholder="Email">
