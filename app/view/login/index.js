@@ -12,7 +12,11 @@ function LoginController($scope, $log, $location, $window, authService){
   const vm = this;
   this.buttons = ['Sign Up', 'Sign In'];
   this.selectedIndex = 0;
-  this.error = false;
+  this.error = {
+    'triggered': false,
+    'signin': false,
+    'signup': false
+  };
 
   this.toggleView = function($index){
     this.selectedIndex = $index;
@@ -39,6 +43,14 @@ function LoginController($scope, $log, $location, $window, authService){
     })
     .catch(err => {
       $log.error(err.message);
+      vm.error.triggered = true;
+      vm.error.signup = true;
+      setTimeout(function() {
+        $scope.$apply(function() {
+          vm.error.triggered = false;
+          vm.error.signup = false;
+        });
+      }, 2500);
     });
   };
 
@@ -51,10 +63,12 @@ function LoginController($scope, $log, $location, $window, authService){
     })
     .catch(err => {
       $log.error(err.message);
-      vm.error = true;
+      vm.error.triggered = true;
+      vm.error.signin = true;
       setTimeout(function() {
         $scope.$apply(function() {
-          vm.error = false;
+          vm.error.triggered = false;
+          vm.error.signin = false;
         });
       }, 2500);
     });
