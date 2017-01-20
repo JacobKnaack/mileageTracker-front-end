@@ -3,6 +3,11 @@
 
   <h4>Track your Travels</h4>
 
+  <div id="signinError" ng-if="loginCtrl.error.triggered">
+    <h3 ng-show="loginCtrl.error.signin">Email or Password does not match!</h3>
+    <h3 ng-show="loginCtrl.error.signup">Invalid Email or Password, password must be longer than 4 characters</h3>
+  </div>
+
   <section class="loginSelect">
     <div ng-repeat="btn in loginCtrl.buttons"
          ng-class="{ 'selected': $index == loginCtrl.selectedIndex }"
@@ -35,7 +40,7 @@
     <button ng-disabled="signupForm.$invalid" type="submit">Create Account</button>
   </form>
 
-  <form ng-show="loginCtrl.selectedIndex == 1" class="signin-form" novalidate ng-submit="loginCtrl.signin()" action="">
+  <form ng-show="loginCtrl.selectedIndex == 1" class="signin-form" novalidate ng-submit="loginCtrl.signin()">
     <section class="emailPass" style="margin-top: 0">
       <div class="input-block">
         <input required ng-class="{appInvalid: signupForm.$submitted && signupForm.email.$invalid}" ng-model="loginCtrl.user.emailAddress" type="email" placeholder="Email">

@@ -4,13 +4,19 @@ require('./_login.scss');
 const angular = require('angular');
 const appMileage = angular.module('appMileageLog');
 
-appMileage.controller('LoginController', ['$log', '$location', '$window', 'authService', LoginController]);
+appMileage.controller('LoginController', ['$scope', '$log', '$location', '$window', 'authService', LoginController]);
 
-function LoginController($log, $location, $window, authService){
+function LoginController($scope, $log, $location, $window, authService){
   $log.debug('signup controller has run');
 
+  const vm = this;
   this.buttons = ['Sign Up', 'Sign In'];
   this.selectedIndex = 0;
+  this.error = {
+    'triggered': false,
+    'signin': false,
+    'signup': false
+  };
 
   this.toggleView = function($index){
     this.selectedIndex = $index;
@@ -34,10 +40,17 @@ function LoginController($log, $location, $window, authService){
     .then(token => {
       $log.info('token', token);
       $location.path('/map');
-      //$window.location.reload();
     })
     .catch(err => {
       $log.error(err.message);
+      vm.error.triggered = true;
+      vm.error.signup = true;
+      setTimeout(function() {
+        $scope.$apply(function() {
+          vm.error.triggered = false;
+          vm.error.signup = false;
+        });
+      }, 2500);
     });
   };
 
@@ -47,10 +60,17 @@ function LoginController($log, $location, $window, authService){
     .then(token => {
       $log.info('token', token);
       $location.path('/map');
-      //$window.location.reload();
     })
     .catch(err => {
       $log.error(err.message);
+      vm.error.triggered = true;
+      vm.error.signin = true;
+      setTimeout(function() {
+        $scope.$apply(function() {
+          vm.error.triggered = false;
+          vm.error.signin = false;
+        });
+      }, 2500);
     });
   };
 }
