@@ -33,6 +33,7 @@ angular.module('appMileageLog', [ngRoute, ngAnimate])
 // components
 require('./component/heading-control');
 require('./component/trip-meter');
+require('./component/footer');
 
 // angular services
 require('./service/auth-service');
