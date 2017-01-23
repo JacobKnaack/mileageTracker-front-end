@@ -29,6 +29,7 @@ function HeadingController($log, $location, $window, authService){
     authService.logout()
     .then(() => {
       $location.path('/login');
+      $window.location.reload();
     })
     .catch(err => {
       $log.error('signout failed: ', err.message);

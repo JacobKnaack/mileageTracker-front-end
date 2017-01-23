@@ -42,7 +42,7 @@ function LoginController($scope, $log, $location, $window, authService){
       $location.path('/map');
     })
     .catch(err => {
-      $log.error(err.message);
+      $log.error(err);
       vm.error.triggered = true;
       vm.error.signup = true;
       setTimeout(function() {
@@ -50,7 +50,7 @@ function LoginController($scope, $log, $location, $window, authService){
           vm.error.triggered = false;
           vm.error.signup = false;
         });
-      }, 2500);
+      }, 3000);
     });
   };
 
@@ -62,7 +62,7 @@ function LoginController($scope, $log, $location, $window, authService){
       $location.path('/map');
     })
     .catch(err => {
-      $log.error(err.message);
+      $log.error(err);
       vm.error.triggered = true;
       vm.error.signin = true;
       setTimeout(function() {
